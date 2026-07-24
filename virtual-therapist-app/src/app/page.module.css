@@ -1,142 +1,134 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
   display: flex;
   flex: 1;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  padding: 48px 24px;
+  background:
+    radial-gradient(circle at top left, #e9f7f2 0, transparent 34%), #f7f8f6;
+  color: #17211d;
 }
 
 .main {
   display: flex;
-  flex: 1;
   width: 100%;
-  max-width: 800px;
+  max-width: 760px;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  gap: 32px;
+}
+
+.heroIcon {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border-radius: 18px;
+  background: #156b55;
+  color: white;
+  box-shadow: 0 12px 30px rgb(21 107 85 / 20%);
 }
 
 .intro {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+  gap: 12px;
+}
+
+.eyebrow {
+  color: #156b55;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .intro h1 {
-  max-width: 320px;
-  font-size: 40px;
+  max-width: 620px;
+  font-size: clamp(36px, 7vw, 58px);
   font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
+  letter-spacing: -0.045em;
+  line-height: 1.04;
 }
 
-.intro p {
-  max-width: 440px;
+.intro > p:last-child {
+  max-width: 640px;
+  color: #52615b;
   font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
+  line-height: 1.7;
 }
 
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
+.example {
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
+  flex-direction: column;
+  gap: 22px;
+  padding: 28px;
+  border: 1px solid #dce5e1;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 82%);
+  box-shadow: 0 24px 70px rgb(36 57 49 / 8%);
 }
 
-.ctas a {
+.exampleHeading {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
+  align-items: flex-start;
+  gap: 14px;
+  color: #156b55;
+}
+
+.exampleHeading h2 {
+  margin-bottom: 6px;
+  color: #17211d;
+  font-size: 20px;
+}
+
+.exampleHeading p {
+  color: #66746e;
+  line-height: 1.5;
+}
+
+.example pre {
+  overflow-x: auto;
+  padding: 20px;
+  border-radius: 14px;
+  background: #17211d;
+  color: #dff3eb;
+  font-family: var(--font-geist-mono);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.primary {
+  display: inline-flex;
   width: fit-content;
-  font-weight: 500;
-}
-
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
+  align-items: center;
   gap: 8px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: #156b55;
+  color: white;
+  font-size: 14px;
+  font-weight: 650;
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.primary:hover {
+  background: #0f5745;
+  transform: translateY(-1px);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-}
-
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
+@media (max-width: 560px) {
   .page {
-    --background: #000;
-    --foreground: #000;
+    align-items: flex-start;
+    padding: 32px 18px;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+  .main {
+    gap: 24px;
+  }
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .example {
+    padding: 20px;
   }
 }
