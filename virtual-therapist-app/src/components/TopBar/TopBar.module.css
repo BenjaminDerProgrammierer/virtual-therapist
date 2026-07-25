@@ -1,0 +1,12 @@
+.topBar {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    gap: 20px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    border-bottom: 2px blue solid;
+    align-items: center;
+}
