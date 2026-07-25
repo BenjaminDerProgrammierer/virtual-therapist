@@ -1,4 +1,3 @@
-from openrouter import OpenRouter
 from dotenv import load_dotenv
 import requests
 import json
@@ -7,11 +6,6 @@ import os
 # Load environment
 load_dotenv()
 API_KEY = os.getenv("REPLICATE_API_TOKEN")
-
-client = OpenRouter(
-    api_key=API_KEY,
-    server_url="https://ai.hackclub.com/proxy/v1",
-)
 
 # Functions
 def llm_request(user_prompt: str) -> str:
