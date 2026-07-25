@@ -13,8 +13,9 @@ model Users {
 }
 
 model Conversations {
-    id     Int @id @default(autoincrement())
-    userId Int
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    createdAt DateTime @default(now())
 }
 
 model Messages {
