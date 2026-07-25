@@ -7,9 +7,7 @@ export default function TopBar({ selectedPage }: { selectedPage: string }) {
     return(
         <div className={styles.topBar}>
             <Spacer width={ 10 }/>
-            <a href="/">
-                <Home></Home>
-            </a>
+            <LinkButton text="Home" link="/" selected={ selectedPage == "/" }/>
             <LinkButton text="Dashboard" link="/dashboard" selected={ selectedPage == "/dashboard" }/>
             <LinkButton text="Login" link={"/login"} selected={ selectedPage == "/login" }/>
         </div>

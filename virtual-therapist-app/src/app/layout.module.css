@@ -1,10 +1,30 @@
+@font-face {
+  font-family: 'AnthropicSansTitle';
+  src: url('../../public/fonts/AnthropicSans/AnthropicSans-Display-Bold-Static.otf') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'AnthropicSans';
+  src: url('../../public/fonts/AnthropicSans/AnthropicSans-Display-Medium-Static.otf') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     flex: 1;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
-    background: black;
-    color: #f7f8f6;
+    margin-top: 70px;
+    font-family: 'AnthropicSans', sans-serif;
+    color: black;
+    background-color: #f5ecda;
+}
+
+.border {
+  border: 2px solid black;
+  border-radius: 15px;
 }
