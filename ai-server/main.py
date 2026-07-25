@@ -26,7 +26,7 @@ async def main():
     if len(sys.argv) >= 3:
         phone_number = sys.argv[2]
     if len(sys.argv) >= 4:
-        is_new_conversation = sys.argv[3].lower() == "true"
+        is_new_conversation = sys.argv[3].lower() == "is_new_conversation"
 
     async with Database() as db:
         user_id = await db.get_user_id_from_phone_number(
