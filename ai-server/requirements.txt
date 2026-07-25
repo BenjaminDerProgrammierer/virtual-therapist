@@ -1,1 +1,1 @@
-openrouter
+openai-whisper

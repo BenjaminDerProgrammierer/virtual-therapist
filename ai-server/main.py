@@ -2,6 +2,12 @@ from core import llm_request, tts_request
 import urllib.request
 import sys
 
+INPUT_PATH = "audio/input.mp3"
+OUTPUT_PATH = "audio/output.mp3"
+
+# STT
+
+
 # Load system prompt
 with open("system.md", 'r') as file:
     system_prompt = file.read()    
@@ -27,9 +33,9 @@ except Exception as e:
 
 # Save output
 try:
-    os.unlink("output.mp3")
+    os.unlink(OUTPUT_PATH)
 except:
     pass
 
-urllib.request.urlretrieve(url, "output.mp3")
-print("TTS saved: output.mp3")
+urllib.request.urlretrieve(url, OUTPUT_PATH)
+print(f"TTS saved: {OUTPUT_PATH}")

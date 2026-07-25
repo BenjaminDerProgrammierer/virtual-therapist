@@ -13,18 +13,27 @@ client = OpenRouter(
     server_url="https://ai.hackclub.com/proxy/v1",
 )
 
+# Functions
 def llm_request(user_prompt: str) -> str:
-    response = client.chat.send(
-        model="~google/gemini-flash-latest",
-        messages=[
-            {"role": "user", "content": user_prompt}
+    headers = {
+        'Authorization': f'Bearer {API_KEY}',
+        'Content-Type': 'application/json',
+    }
+
+    json_data = {
+        'model': '~google/gemini-flash-latest',
+        'messages': [
+            {
+                'role': 'user',
+                'content': user_prompt,
+            },
         ],
-        stream=False,
-    )
+    }
 
-    return response.choices[0].message.content
+    response = requests.post('https://ai.hackclub.com/proxy/v1/chat/completions', headers=headers, json=json_data)
+    return json.loads(response.text)["choices"][0]["message"]["content"]
 
-def tts_request(prompt: str):
+def tts_request(prompt: str) -> str:
     headers = {
         'Authorization': 'Bearer ' + API_KEY,
         'Content-Type': 'application/json',
