@@ -42,7 +42,7 @@ async def main():
         past_messages = await db.get_past_conversation_messages(
             conversation_id=current_conversation_id
         )
-        # TODO memory = await db.get_user_memory(user_id=user_id)
+        await db.get_user_memory(user_id=user_id)
 
     print(f"PROMPT: {sys.argv[1]}")
     messages = (
@@ -50,7 +50,7 @@ async def main():
             {
                 "role": "system",
                 "content": system_prompt.format(
-                    memory="(no memory)" # TODO memory=memory or "(no memory)"
+                    memory=memory or "(no memory)"
                 ),
             }
         ]
@@ -83,9 +83,12 @@ async def main():
     urllib.request.urlretrieve(url, OUTPUT_PATH)
     print(f"TTS saved: {OUTPUT_PATH}")
 
-"""
     # Get transcript
-    transcript = "User: why ." # TODO get the actual transcript
+    transcript = "User: why am i shorter than all my friends\nDr. Snickers: Someone had to be the group armrest, and you're lowkey built for the job."
+
+
+     # TODO get the actual transcript
+
 
     # Update memory
     memory_messages = [
@@ -116,7 +119,6 @@ async def main():
             content=llm_response,
         )
         await db.update_user_memory(user_id=user_id, new_memory=llm_response)
-"""
 
 if __name__ == "__main__":
     asyncio.run(main())
