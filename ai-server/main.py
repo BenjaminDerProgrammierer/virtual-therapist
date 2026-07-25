@@ -7,14 +7,14 @@ INPUT_PATH = "audio/input.mp3"
 OUTPUT_PATH = "audio/output.mp3"
 
 # Load system prompt
-with open("system.md", 'r') as file:
-    system_prompt = file.read()    
+with open("system.md", "r") as file:
+    system_prompt = file.read()
 
 if len(sys.argv) < 2:
     print("Usage: python main.py <user_prompt>")
     sys.exit(1)
 
-user_prompt = system_prompt + sys.argv[1]
+user_prompt = system_prompt.format(memory="", user_input=sys.argv[1])
 print(f"PROMPT: {sys.argv[1]}")
 
 # LLM
