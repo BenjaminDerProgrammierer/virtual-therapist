@@ -3,11 +3,13 @@ import styles from "./page.module.css";
 import Spacer from "@/components/Spacer";
 import Form from "next/form";
 import {onSignIn} from "@/app/login/actions";
+import TopBar from "@/components/TopBar/TopBar";
 
 
 export default function Login() {
     return (
         <>
+            <TopBar selectedPage={"/login"}/>
             <main className={styles.main}>
                 <div className={styles.card}>
                     <h1 className={styles.bold}>Login</h1>
