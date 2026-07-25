@@ -1,0 +1,72 @@
+.page {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    background: black;
+    color: #f7f8f6;
+}
+
+.main {
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+    width: 100%;
+    max-width: 760px;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 40px;
+    border: 2px blue solid;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    background: #17211d;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.loginField {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.searchInput {
+    border: 2px darkblue solid;
+    padding: 12px 10px;
+    color: black;
+    font-size: 16px;
+    border-radius: 8px;
+    background: white;
+}
+
+.searchInput::placeholder {
+    color: #888888;
+    font-style: italic;
+    font-weight: 300;
+}
+
+.submitButton {
+    display: flex;
+    padding: 6px;
+    width: 250px;
+    color: white;
+    font-size: 14px;
+    border-color: darkblue;
+    background: blue;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+}

@@ -4,34 +4,20 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name        String?
-  phoneNumber String   @unique
-  createdAt   DateTime @default(now())
-  memory      String?
-
-  conversations Conversation[]
+  id                Int               @id @default(autoincrement())
+  name              String
+  phone_number      String            @unique
+  access_code       String            @default("0")
+  therapy_sessions  TherapySession[]
+  createdAt         DateTime          @default(now())
 }
 
-model Conversation {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  createdAt DateTime @default(now())
-
-  user     User      @relation(fields: [userId], references: [id])
-  messages Message[]
-}
-
-model Message {
-  id             Int      @id @default(autoincrement())
-  conversationId Int
-  role           String
-  content        String
-  createdAt      DateTime @default(now())
-
-  conversation Conversation @relation(fields: [conversationId], references: [id])
+model TherapySession {
+  id          Int         @id @default(autoincrement())
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    Int
 }

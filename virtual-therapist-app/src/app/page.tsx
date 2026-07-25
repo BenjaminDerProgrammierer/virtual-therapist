@@ -31,17 +31,10 @@ export default function Home() {
           </div>
 
           <pre>
-            <code>{`fetch("/api/users", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: "Alex",
-    email: "alex@example.com"
-  })
-});`}</code>
+            <code>{`fetch("/login");`}</code>
           </pre>
 
-          <a className={styles.primary} href="/api/users">
+          <a className={styles.primary} href="/login">
             View users
             <ArrowRight size={16} aria-hidden="true" />
           </a>

@@ -12,11 +12,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
-    name?: string;
-    phoneNumber?: string;
+    name?: string,
+    phone_number?: string,
   };
 
-  if (!body.name || !body.phoneNumber) {
+  if (!body.name || !body.phone_number) {
     return Response.json(
       { error: "Both name and phone number are required." },
       { status: 400 },
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   const user = await prisma.user.create({
     data: {
       name: body.name,
-      phoneNumber: body.phoneNumber,
+      phone_number: body.phone_number,
     },
   });
 

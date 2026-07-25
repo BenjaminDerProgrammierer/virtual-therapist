@@ -47,3 +47,12 @@ a {
     color-scheme: dark;
   }
 }
+
+h1 {
+  font-size: 30px;
+}
+
+h1.bold {
+  font-size: 120px;
+  font-weight: bold;
+}
