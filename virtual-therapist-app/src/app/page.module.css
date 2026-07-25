@@ -10,6 +10,20 @@
   text-decoration: underline !important;
 }
 
+.phone {
+  display: block;
+  width: 100%;
+  padding: 20px;
+  border: 2px solid black;
+  margin: 15px 0 25px 0;
+  border-radius: 15px;
+}
+
+.phonep2 {
+  font-size: 25px;
+  margin-top: 5px;
+}
+
 .button {
   display: block;
   padding: 17;
@@ -20,7 +34,6 @@
   width: 200px;
   text-align: center;
   font-size: 22;
-  margin-top: 15px;
 }
 
 .main {

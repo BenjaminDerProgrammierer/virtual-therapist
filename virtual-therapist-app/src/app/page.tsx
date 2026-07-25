@@ -16,6 +16,10 @@ export default function Home() {
           <p>
             Dr. Snickers is SOTA—in every therapy benchmark. Honestly? This not just another therapist—this will put you—ahead of everyone else—in 2026.
           </p>
+          <div className={styles.phone}>
+            <p className={styles.phonep1}>Call Dr. Snickers</p>
+            <p className={styles.phonep2}>+44 221 596 196 054</p>
+          </div>
           <a className={styles.button} href="/login">Login</a>
         </section>
 
