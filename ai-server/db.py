@@ -24,7 +24,7 @@ class Database:
     async def get_past_conversation_messages(
         self, conversation_id: int
     ) -> list[dict[str, str]]:
-        conversation_messages = await self.db.messages.find_many(
+        conversation_messages = await self.db.message.find_many(
             where={"conversationId": conversation_id}, order={"createdAt": "asc"}
         )
         return [
@@ -32,7 +32,7 @@ class Database:
         ]
 
     async def save_message(self, conversation_id: int, role: str, content: str) -> None:
-        await self.db.messages.create(
+        await self.db.message.create(
             data={
                 "conversationId": conversation_id,
                 "role": role,
@@ -41,11 +41,11 @@ class Database:
         )
 
     async def create_conversation(self, user_id: int) -> int:
-        conversation = await self.db.conversations.create(data={"userId": user_id})
+        conversation = await self.db.conversation.create(data={"userId": user_id})
         return conversation.id
 
     async def get_latest_conversation_id(self, user_id: int) -> int:
-        conversation = await self.db.conversations.find_first(
+        conversation = await self.db.conversation.find_first(
             where={"userId": user_id},
             order=cast(Any, {"createdAt": "desc"}),
         )
@@ -57,28 +57,28 @@ class Database:
     async def get_user_id_from_phone_number(
         self, phone_number: str, create_if_not_exists: bool = True
     ) -> int:
-        user = await self.db.users.find_first(where={"phoneNumber": phone_number})
+        user = await self.db.user.find_first(where={"phoneNumber": phone_number})
         if user:
             return user.id
         if create_if_not_exists:
-            new_user = await self.db.users.create(data={"phoneNumber": phone_number})
+            new_user = await self.db.user.create(data={"phoneNumber": phone_number})
             return new_user.id
         raise ValueError(f"User with phone number {phone_number} not found.")
 
     async def delete_user(self, user_id: int) -> None:
-        for conversation in await self.db.conversations.find_many(
+        for conversation in await self.db.conversation.find_many(
             where={"userId": user_id}
         ):
             await self.delete_conversation(conversation.id)
-        await self.db.users.delete(where={"id": user_id})
+        await self.db.user.delete(where={"id": user_id})
 
     async def delete_conversation(self, conversation_id: int) -> None:
-        await self.db.messages.delete_many(where={"conversationId": conversation_id})
-        await self.db.conversations.delete(where={"id": conversation_id})
+        await self.db.message.delete_many(where={"conversationId": conversation_id})
+        await self.db.conversation.delete(where={"id": conversation_id})
 
     async def get_user_memory(self, user_id: int) -> str | None:
-        user = await self.db.users.find_first(where={"id": user_id})
+        user = await self.db.user.find_first(where={"id": user_id})
         return user.memory if user else None
 
     async def update_user_memory(self, user_id: int, new_memory: str) -> None:
-        await self.db.users.update(where={"id": user_id}, data={"memory": new_memory})
+        await self.db.user.update(where={"id": user_id}, data={"memory": new_memory})

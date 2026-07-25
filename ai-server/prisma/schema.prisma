@@ -7,19 +7,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Users {
+model User {
     id          Int    @id @default(autoincrement())
     phoneNumber String @unique
     memory      String?
 }
 
-model Conversations {
+model Conversation {
     id        Int      @id @default(autoincrement())
     userId    Int
     createdAt DateTime @default(now())
 }
 
-model Messages {
+model Message {
     id             Int      @id @default(autoincrement())
     conversationId Int
     role           String
