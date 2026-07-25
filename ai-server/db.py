@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, cast
 
 from prisma import Prisma
@@ -92,12 +91,13 @@ class Database:
             return new_user.id
         raise ValueError(f"User with phone number {phone_number} not found.")
 
+    async def delete_user(self, user_id: int) -> None:
+        for conversation in await self.db.conversations.find_many(
+            where={"userId": user_id}
+        ):
+            await self.delete_conversation(conversation.id)
+        await self.db.users.delete(where={"id": user_id})
 
-async def test():
-    async with Database() as db:
-        user_id = await db.get_user_id_from_phone_number("+1234567890")
-        print(f"User ID: {user_id}")
-
-
-if __name__ == "__main__":
-    asyncio.run(test())
+    async def delete_conversation(self, conversation_id: int) -> None:
+        await self.db.messages.delete_many(where={"conversationId": conversation_id})
+        await self.db.conversations.delete(where={"id": conversation_id})
