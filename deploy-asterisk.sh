@@ -28,6 +28,9 @@ WhisperModel("tiny", device="cpu", compute_type="int8",
 PY
 
 install -d /etc/asterisk /etc/virtual-therapist /var/lib/asterisk/agi-bin /opt/virtual-therapist
+install -d /etc/systemd/system/asterisk.service.d
+printf '[Service]\nRuntimeDirectory=asterisk\n' > /etc/systemd/system/asterisk.service.d/runtime.conf
+systemctl daemon-reload
 if [[ ! -s /etc/virtual-therapist/ai-server.env ]]; then
     read -rsp "Hack Club AI token: " hack_club_token
     echo
@@ -40,4 +43,3 @@ ln -sfn -- "${repo_root}"/agi-bin/* /var/lib/asterisk/agi-bin/
 ln -sfnT -- "${repo_root}/ai-server" /opt/virtual-therapist/ai-server
 
 echo "Installation complete."
-y
