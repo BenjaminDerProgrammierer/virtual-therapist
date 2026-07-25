@@ -96,8 +96,8 @@ async def main():
 
     # LLM
     try:
-        llm_response = llm_request(memory_messages)
-        print(f"MEMORY UPDATE: {llm_response}")
+        memory_llm_response = llm_request(memory_messages)
+        print(f"MEMORY UPDATE: {memory_llm_response}")
     except Exception as e:
         print(f"LLM Request failed:\n{e}")
         sys.exit(1)
@@ -111,7 +111,7 @@ async def main():
             role="assistant",
             content=llm_response,
         )
-        await db.update_user_memory(user_id=user_id, new_memory=llm_response)
+        await db.update_user_memory(user_id=user_id, new_memory=memory_llm_response)
 
 
 if __name__ == "__main__":
