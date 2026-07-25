@@ -55,7 +55,9 @@ class Database:
         conversation_messages = await self.db.messages.find_many(
             where={"conversationId": conversation_id}, order={"createdAt": "asc"}
         )
-        return "\n".join([msg.content for msg in conversation_messages])
+        return "\n".join(
+            [f"{msg.role}: {msg.content}" for msg in conversation_messages]
+        )
 
     async def save_message(self, conversation_id: int, role: str, content: str) -> None:
         await self.db.messages.create(
