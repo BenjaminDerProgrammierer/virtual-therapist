@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import array
+import asyncio
 import io
 import math
 import os
@@ -20,12 +21,15 @@ from pathlib import Path
 import av
 import numpy as np
 import requests
+from av.container.input import InputContainer
+from core import llm_request, tts_request
+from db import Database
 from faster_whisper import WhisperModel
 
 SAMPLE_RATE = 16_000
 MODEL_NAME = os.environ.get("HAMSTER_WHISPER_MODEL", "tiny")
 MODEL_ROOT = "/opt/asterisk-whisper/models"
-AI_SERVER_DIR = Path("/opt/virtual-therapist/ai-server")
+AI_SERVER_DIR = Path(__file__).resolve().parent
 AI_ENV_FILE = Path("/etc/virtual-therapist/ai-server.env")
 AI_AUDIO_LIMIT = 20 * 1024 * 1024
 HAMSTER_ENDPOINT = "PJSIP/40202"
@@ -107,7 +111,9 @@ class AudioCapture:
     stop_event: threading.Event = field(default_factory=threading.Event)
 
     def start(self) -> threading.Thread:
-        thread = threading.Thread(target=self._read_loop, name="eagi-audio", daemon=True)
+        thread = threading.Thread(
+            target=self._read_loop, name="eagi-audio", daemon=True
+        )
         thread.start()
         return thread
 
@@ -146,7 +152,9 @@ class AudioCapture:
                 samples.frombytes(chunk)
                 if sys.byteorder != "little":
                     samples.byteswap()
-                rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+                rms = math.sqrt(
+                    sum(sample * sample for sample in samples) / len(samples)
+                )
                 chunk_seconds = len(chunk) / (SAMPLE_RATE * 2)
                 now = time.monotonic()
 
@@ -161,7 +169,9 @@ class AudioCapture:
             self.eof = True
 
 
-def transcribe(model: WhisperModel, audio_bytes: bytes, use_vad: bool) -> tuple[str, str]:
+def transcribe(
+    model: WhisperModel, audio_bytes: bytes, use_vad: bool
+) -> tuple[str, str]:
     if len(audio_bytes) < int(MIN_AUDIO_SECONDS * SAMPLE_RATE * 2):
         return "", "unknown"
 
@@ -174,7 +184,9 @@ def transcribe(model: WhisperModel, audio_bytes: bytes, use_vad: bool) -> tuple[
         vad_filter=use_vad,
         vad_parameters={"min_silence_duration_ms": 500} if use_vad else None,
     )
-    text = " ".join(segment.text.strip() for segment in segments if segment.text.strip())
+    text = " ".join(
+        segment.text.strip() for segment in segments if segment.text.strip()
+    )
     return " ".join(text.split()), info.language or "unknown"
 
 
@@ -190,15 +202,68 @@ def load_ai_environment() -> None:
     raise RuntimeError("REPLICATE_API_TOKEN is missing from the AI environment file")
 
 
-def request_ai_response(transcript: str) -> tuple[str, str]:
-    load_ai_environment()
-    if str(AI_SERVER_DIR) not in sys.path:
-        sys.path.insert(0, str(AI_SERVER_DIR))
-    from core import llm_request, tts_request
+def load_prompt(name: str) -> str:
+    return (AI_SERVER_DIR / name).read_text(encoding="utf-8")
 
-    system_prompt = (AI_SERVER_DIR / "system.md").read_text(encoding="utf-8")
-    response_text = llm_request(system_prompt + "\n" + transcript)
-    return response_text, tts_request(response_text)
+
+def get_phone_number(agi: AGI) -> str:
+    caller_id = (
+        agi.environment.get("agi_callerid")
+        or agi.environment.get("agi_calleridnum")
+        or agi.environment.get("callerid")
+        or "anonymous"
+    ).strip()
+    if not caller_id or caller_id.lower().startswith("unknown"):
+        return "anonymous"
+    return caller_id
+
+
+async def load_conversation_context(
+    phone_number: str,
+) -> tuple[int, int, list[dict[str, str]], str]:
+    async with Database() as db:
+        user_id = await db.get_user_id_from_phone_number(
+            phone_number, create_if_not_exists=True
+        )
+        current_conversation_id = await db.get_latest_conversation_id(user_id=user_id)
+        past_messages = await db.get_past_conversation_messages(
+            conversation_id=current_conversation_id
+        )
+        memory = await db.get_user_memory(user_id=user_id)
+    return user_id, current_conversation_id, past_messages, memory or ""
+
+
+def build_chat_messages(
+    system_prompt: str,
+    memory: str,
+    past_messages: list[dict[str, str]],
+    transcript: str,
+) -> list[dict[str, str]]:
+    return (
+        [
+            {
+                "role": "system",
+                "content": system_prompt.format(memory=memory or "(no memory)"),
+            }
+        ]
+        + past_messages
+        + [{"role": "user", "content": transcript}]
+    )
+
+
+def build_memory_messages(
+    memory_prompt: str, memory: str, transcript: str
+) -> list[dict[str, str]]:
+    return [
+        {
+            "role": "system",
+            "content": memory_prompt.format(
+                memory=memory
+                or "No memory yet. Either add your first entries now or output this exact line not to add anything.",
+                transcript=transcript,
+            ),
+        }
+    ]
 
 
 def download_as_slin(audio_url: str) -> str:
@@ -218,9 +283,11 @@ def download_as_slin(audio_url: str) -> str:
     try:
         with output, av.open(io.BytesIO(response.content)) as container:
             resampler = av.AudioResampler(format="s16", layout="mono", rate=8000)
-            for frame in container.decode(audio=0):
+            for frame in container.decode(audio=0):  # type: ignore
                 for converted in resampler.resample(frame):
-                    output.write(converted.to_ndarray().astype("<i2", copy=False).tobytes())
+                    output.write(
+                        converted.to_ndarray().astype("<i2", copy=False).tobytes()
+                    )
             for converted in resampler.resample(None):
                 output.write(converted.to_ndarray().astype("<i2", copy=False).tobytes())
         if os.path.getsize(output_path) == 0:
@@ -265,7 +332,9 @@ def wav_rms(path: str) -> float:
     with wave.open(path, "rb") as recording:
         if recording.getnchannels() != 1 or recording.getsampwidth() != 2:
             raise RuntimeError("hamster recording has an unexpected audio format")
-        samples = np.frombuffer(recording.readframes(recording.getnframes()), dtype="<i2")
+        samples = np.frombuffer(
+            recording.readframes(recording.getnframes()), dtype="<i2"
+        )
     if samples.size == 0:
         return 0.0
     values = samples.astype(np.float64)
@@ -290,7 +359,9 @@ def transform_with_hamster(agi: AGI, speech_path: str) -> str:
     result_base = recording_base(agi)
     result_path = result_base + ".wav"
 
-    for attempt, noise_rms in enumerate((WHITE_NOISE_RMS, WHITE_NOISE_RETRY_RMS), start=1):
+    for attempt, noise_rms in enumerate(
+        (WHITE_NOISE_RMS, WHITE_NOISE_RETRY_RMS), start=1
+    ):
         mixed_path = mix_with_white_noise(speech_path, noise_rms=noise_rms)
         mixed_base = os.path.splitext(mixed_path)[0]
         monitor_base = mixed_base + "-monitor"
@@ -323,7 +394,9 @@ def transform_with_hamster(agi: AGI, speech_path: str) -> str:
             if os.path.isfile(result_path) and os.path.getsize(result_path) > 44:
                 signal_rms = wav_rms(result_path)
                 if signal_rms >= MIN_HAMSTER_RMS:
-                    agi.verbose(f"HAMSTER RECORDING: {result_path} (RMS {signal_rms:.1f})")
+                    agi.verbose(
+                        f"HAMSTER RECORDING: {result_path} (RMS {signal_rms:.1f})"
+                    )
                     return result_base
             agi.verbose(f"HAMSTER TRANSFORM: silent response on attempt {attempt}")
         finally:
@@ -340,7 +413,7 @@ def transform_with_hamster(agi: AGI, speech_path: str) -> str:
     raise RuntimeError("hamster returned silence after two attempts")
 
 
-def main() -> int:
+async def main() -> int:
     agi = AGI()
     capture = AudioCapture()
 
@@ -386,7 +459,9 @@ def main() -> int:
         final_audio = capture.snapshot()
         final_text, language = transcribe(model, final_audio, use_vad=True)
         if not final_text and capture.speech_seen:
-            agi.verbose("HAMSTER TRANSCRIPT: VAD removed all speech, retrying without VAD")
+            agi.verbose(
+                "HAMSTER TRANSCRIPT: VAD removed all speech, retrying without VAD"
+            )
             final_text, language = transcribe(model, final_audio, use_vad=False)
         if not final_text and previous_partial:
             agi.verbose("HAMSTER TRANSCRIPT: using the last recognized live transcript")
@@ -394,7 +469,25 @@ def main() -> int:
         if final_text:
             agi.verbose(f"HAMSTER TRANSCRIPT [final/{language}]: {final_text}")
             agi.stream_file("hamster-thinking")
-            response_text, audio_url = request_ai_response(final_text)
+            load_ai_environment()
+            if str(AI_SERVER_DIR) not in sys.path:
+                sys.path.insert(0, str(AI_SERVER_DIR))
+
+            system_prompt = load_prompt("system.md")
+            memory_prompt = load_prompt("memory.md")
+            phone_number = get_phone_number(agi)
+            user_id, current_conversation_id, past_messages, memory = (
+                await load_conversation_context(phone_number)
+            )
+            chat_messages = build_chat_messages(
+                system_prompt=system_prompt,
+                memory=memory,
+                past_messages=past_messages,
+                transcript=final_text,
+            )
+
+            response_text = llm_request(chat_messages)
+            audio_url = tts_request(response_text)
             agi.verbose(f"HAMSTER AI RESPONSE: {response_text}")
             audio_path = download_as_slin(audio_url)
             try:
@@ -402,9 +495,33 @@ def main() -> int:
                 agi.stream_file(transformed_base)
             finally:
                 os.unlink(audio_path)
+
+            memory_messages = build_memory_messages(
+                memory_prompt=memory_prompt, memory=memory, transcript=final_text
+            )
+            memory_llm_response = llm_request(memory_messages)
+            agi.verbose(f"MEMORY UPDATE: {memory_llm_response}")
+
+            async with Database() as db:
+                await db.save_message(
+                    conversation_id=current_conversation_id,
+                    role="user",
+                    content=final_text,
+                )
+                await db.save_message(
+                    conversation_id=current_conversation_id,
+                    role="assistant",
+                    content=response_text,
+                )
+                await db.update_user_memory(
+                    user_id=user_id, new_memory=memory_llm_response
+                )
+
             agi.set_variable("HAMSTER_AI_STATUS", "success")
         elif capture.speech_seen:
-            agi.verbose("HAMSTER TRANSCRIPT [final]: speech was detected but not recognized")
+            agi.verbose(
+                "HAMSTER TRANSCRIPT [final]: speech was detected but not recognized"
+            )
             agi.set_variable("HAMSTER_AI_STATUS", "no-speech")
         else:
             agi.verbose("HAMSTER TRANSCRIPT [final]: no speech detected")
@@ -423,4 +540,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(asyncio.run(main()))
