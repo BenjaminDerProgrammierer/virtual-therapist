@@ -27,11 +27,13 @@ WhisperModel("tiny", device="cpu", compute_type="int8",
              download_root="/opt/asterisk-whisper/models")
 PY
 
-read -rsp "Hack Club AI token: " hack_club_token
-echo
 install -d /etc/asterisk /etc/virtual-therapist /var/lib/asterisk/agi-bin /opt/virtual-therapist
-install -o root -g asterisk -m 0640 /dev/null /etc/virtual-therapist/ai-server.env
-printf 'REPLICATE_API_TOKEN=%s\n' "${hack_club_token}" > /etc/virtual-therapist/ai-server.env
+if [[ ! -s /etc/virtual-therapist/ai-server.env ]]; then
+    read -rsp "Hack Club AI token: " hack_club_token
+    echo
+    install -o root -g asterisk -m 0640 /dev/null /etc/virtual-therapist/ai-server.env
+    printf 'REPLICATE_API_TOKEN=%s\n' "${hack_club_token}" > /etc/virtual-therapist/ai-server.env
+fi
 
 ln -sfn -- "${repo_root}"/asterisk-config/* /etc/asterisk/
 ln -sfn -- "${repo_root}"/agi-bin/* /var/lib/asterisk/agi-bin/
