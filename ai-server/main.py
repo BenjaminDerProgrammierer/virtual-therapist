@@ -16,7 +16,7 @@ async def main():
 
     if len(sys.argv) < 2:
         print(
-            "Usage: python main.py <user_prompt> [<phone_number>] [is_new_conversation]"
+            "Usage: python main.py <user_prompt> [<phone_number>] [--is-new-conversation]"
         )
         sys.exit(1)
 
@@ -25,8 +25,7 @@ async def main():
 
     if len(sys.argv) >= 3:
         phone_number = sys.argv[2]
-    if len(sys.argv) >= 4:
-        is_new_conversation = sys.argv[3].lower() == "is_new_conversation"
+    is_new_conversation = "--is-new-conversation" in sys.argv
 
     async with Database() as db:
         user_id = await db.get_user_id_from_phone_number(
