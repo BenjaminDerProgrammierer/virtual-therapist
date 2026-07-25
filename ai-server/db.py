@@ -105,3 +105,10 @@ class Database:
     async def delete_conversation(self, conversation_id: int) -> None:
         await self.db.messages.delete_many(where={"conversationId": conversation_id})
         await self.db.conversations.delete(where={"id": conversation_id})
+
+    async def get_user_memory(self, user_id: int) -> str | None:
+        user = await self.db.users.find_first(where={"id": user_id})
+        return user.memory if user else None
+
+    async def update_user_memory(self, user_id: int, new_memory: str) -> None:
+        await self.db.users.update(where={"id": user_id}, data={"memory": new_memory})
