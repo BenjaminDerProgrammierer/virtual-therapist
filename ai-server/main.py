@@ -8,7 +8,6 @@ from db import Database
 
 OUTPUT_PATH = "audio/output.mp3"
 
-
 async def main():
     # Load system prompt
     with open("system.md", "r") as file:
