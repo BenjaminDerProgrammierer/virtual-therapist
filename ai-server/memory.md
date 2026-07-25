@@ -43,6 +43,6 @@ END EXAMPLES
 # OUTPUT INSTRUCTIONS
 
 - Output the entire memory again, adding, changing, or removing entries as you consider.
-- Always add entries at 
+- Always add entries at the bottom.
 - Always refer to the user as "The user", not "I" or "you".
 - Entries are bullet points.

@@ -8,6 +8,7 @@ from db import Database
 
 OUTPUT_PATH = "audio/output.mp3"
 
+
 async def main():
     # Load system prompt
     with open("system.md", "r") as file:
@@ -42,16 +43,14 @@ async def main():
         past_messages = await db.get_past_conversation_messages(
             conversation_id=current_conversation_id
         )
-        await db.get_user_memory(user_id=user_id)
+        memory = await db.get_user_memory(user_id=user_id)
 
     print(f"PROMPT: {sys.argv[1]}")
     messages = (
         [
             {
                 "role": "system",
-                "content": system_prompt.format(
-                    memory=memory or "(no memory)"
-                ),
+                "content": system_prompt.format(memory=memory or "(no memory)"),
             }
         ]
         + past_messages
@@ -83,20 +82,14 @@ async def main():
     urllib.request.urlretrieve(url, OUTPUT_PATH)
     print(f"TTS saved: {OUTPUT_PATH}")
 
-    # Get transcript
-    transcript = "User: why am i shorter than all my friends\nDr. Snickers: Someone had to be the group armrest, and you're lowkey built for the job."
-
-
-     # TODO get the actual transcript
-
-
     # Update memory
     memory_messages = [
         {
             "role": "system",
             "content": memory_prompt.format(
-                memory=memory or "No memory yet. Either add your first entries now or output this exact line not to add anything.",
-                transcript=transcript
+                memory=memory
+                or "No memory yet. Either add your first entries now or output this exact line not to add anything.",
+                transcript=sys.argv[1],
             ),
         }
     ]
@@ -119,6 +112,7 @@ async def main():
             content=llm_response,
         )
         await db.update_user_memory(user_id=user_id, new_memory=llm_response)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
