@@ -36,7 +36,7 @@ def llm_request(user_prompt: str) -> str:
 
 def tts_request(prompt: str) -> str:
     headers = {
-        "Authorization": "Bearer " + API_KEY,
+        "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json",
         "Prefer": "wait",
     }
