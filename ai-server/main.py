@@ -84,7 +84,10 @@ async def main():
     memory_messages = [
         {
             "role": "system",
-            "content": system_prompt.format(memory=memory or "No memory yet. Either add your first entries now or output this exact line not to add anything."),
+            "content": system_prompt.format(
+                memory=memory or "No memory yet. Either add your first entries now or output this exact line not to add anything.",
+                transcript=transcript    
+            ),
         },
         {
             "role": "user",

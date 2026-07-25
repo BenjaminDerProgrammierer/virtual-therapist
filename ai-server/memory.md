@@ -8,6 +8,7 @@
 
 - You must store relevant information about the user.
 - Remember relevant history, knowledge and personality about the user.
+- If there are more than 10 entries, remove the older
 
 # CURRENT MEMORY
 
@@ -20,5 +21,6 @@
 # OUTPUT INSTRUCTIONS
 
 - Output the entire memory again, adding, changing, or removing entries as you consider.
+- Always add entries at 
 - Always refer to the user as "The user", not "I" or "you".
 - Entries are bullet points.
