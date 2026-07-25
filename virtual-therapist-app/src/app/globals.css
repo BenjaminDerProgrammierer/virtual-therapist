@@ -54,7 +54,8 @@ a {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: clamp(36px, 7vw, 58px);
+  font-family: 'AnthropicSansTitle', sans-serif;
 }
 
 h1.bold {

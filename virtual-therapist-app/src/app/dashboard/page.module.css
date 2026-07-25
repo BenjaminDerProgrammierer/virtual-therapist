@@ -1,21 +1,39 @@
 .main {
-    display: flex;
-    align-items: center;
-    /*justify-content: center;*/
-    width: 100%;
-    max-width: 760px;
-    flex-direction: column;
-    gap: 16px;
+    padding-top: 60px;
 }
 
-.card {
+.container {
+    padding-top: 30px;
+    padding-bottom: 30px;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 40px;
-    border: 2px dodgerblue solid;
-    border-radius: 8px;
-    align-items: center;
-    justify-content: center;
-    background: #17211d;
+    flex-direction: row;
 }
+
+.conversationHistory {
+    display: block;
+    border: 2px solid black;
+    border-radius: 15px;
+    min-width: 700px !important;
+    min-height: 800px;
+    padding: 30px;
+    margin-right: 20px;
+}
+
+.conversationHistory > h2 {
+    margin-bottom: 10px;
+}
+
+.memory > h2 {
+    margin-bottom: 10px;
+}
+
+.memory {
+    display: block;
+    border: 2px solid black;
+    border-radius: 15px;
+    min-width: 600px !important;
+    min-height: 800px;
+    padding: 30px;
+    margin-left: 20px;
+}
+

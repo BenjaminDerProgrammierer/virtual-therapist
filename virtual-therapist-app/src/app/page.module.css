@@ -72,11 +72,9 @@
 
 .intro h1 {
   max-width: 620px;
-  font-size: clamp(36px, 7vw, 58px);
   font-weight: 600;
   letter-spacing: -0.045em;
   line-height: 1.04;
-  font-family: 'AnthropicSansTitle', sans-serif;
 }
 
 @media (max-width: 560px) {
