@@ -14,7 +14,7 @@ export default function Home() {
           <h1>Prisma and Lucide are ready to use.</h1>
           <p>
             This page renders icons from Lucide React. The example API below
-            reads and creates users with Prisma and a local SQLite database.
+            reads and creates users with Prisma and a PostgreSQL database.
           </p>
         </section>
 
