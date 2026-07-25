@@ -1,21 +1,18 @@
 from core import llm_request, tts_request
 import urllib.request
 import sys
-import os
 
 INPUT_PATH = "audio/input.mp3"
 OUTPUT_PATH = "audio/output.mp3"
 
-# STT
-
-
 # Load system prompt
-with open("system.md", "r") as file:
-    system_prompt = file.read()
+with open("system.md", 'r') as file:
+    system_prompt = file.read()    
 
 if len(sys.argv) < 2:
     print("Usage: python main.py <user_prompt>")
     sys.exit(1)
+
 user_prompt = system_prompt + sys.argv[1]
 print(f"PROMPT: {sys.argv[1]}")
 
@@ -41,10 +38,5 @@ try:
 except:
     pass
 
-<<<<<<< HEAD
 urllib.request.urlretrieve(url, OUTPUT_PATH)
 print(f"TTS saved: {OUTPUT_PATH}")
-=======
-urllib.request.urlretrieve(url, "output.mp3")
-print("TTS saved: output.mp3")
->>>>>>> refs/remotes/origin/ai-server
