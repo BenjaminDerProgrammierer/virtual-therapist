@@ -7,7 +7,6 @@ import array
 import io
 import math
 import os
-from pathlib import Path
 import re
 import select
 import sys
@@ -16,12 +15,12 @@ import threading
 import time
 import wave
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import av
 import numpy as np
 import requests
 from faster_whisper import WhisperModel
-
 
 SAMPLE_RATE = 16_000
 MODEL_NAME = os.environ.get("HAMSTER_WHISPER_MODEL", "tiny")

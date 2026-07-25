@@ -1,3 +1,6 @@
+av
 dotenv
+faster_whisper
 prisma
+numpy
 requests
