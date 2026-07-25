@@ -8,6 +8,7 @@ from db import Database
 
 OUTPUT_PATH = "audio/output.mp3"
 
+
 async def main():
     # Load system prompt
     with open("system.md", "r") as file:
@@ -18,7 +19,7 @@ async def main():
             "Usage: python main.py <user_prompt> [<phone_number>] [is_new_conversation]"
         )
         sys.exit(1)
-        
+
     phone_number = None
     is_new_conversation = False
 
@@ -42,14 +43,16 @@ async def main():
             conversation_id=current_conversation_id
         )
 
-    user_prompt = system_prompt.format(
-        past_messages=past_messages, user_input=sys.argv[1]
-    )
     print(f"PROMPT: {sys.argv[1]}")
+    messages = (
+        [{"role": "system", "content": system_prompt}]
+        + past_messages
+        + [{"role": "user", "content": sys.argv[1]}]
+    )
 
     # LLM
     try:
-        llm_response = llm_request(user_prompt)
+        llm_response = llm_request(messages)
         print(f"LLM RESPONSE: {llm_response}")
     except Exception as e:
         print(f"LLM Request failed:\n{e}")

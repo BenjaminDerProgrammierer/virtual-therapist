@@ -51,13 +51,15 @@ class Database:
     async def __aexit__(self, exc_type, exc_value, traceback):
         await self.disconnect()
 
-    async def get_past_conversation_messages(self, conversation_id: int) -> str:
+    async def get_past_conversation_messages(
+        self, conversation_id: int
+    ) -> list[dict[str, str]]:
         conversation_messages = await self.db.messages.find_many(
             where={"conversationId": conversation_id}, order={"createdAt": "asc"}
         )
-        return "\n".join(
-            [f"{msg.role}: {msg.content}" for msg in conversation_messages]
-        )
+        return [
+            {"role": msg.role, "content": msg.content} for msg in conversation_messages
+        ]
 
     async def save_message(self, conversation_id: int, role: str, content: str) -> None:
         await self.db.messages.create(

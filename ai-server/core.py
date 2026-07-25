@@ -10,7 +10,7 @@ API_KEY = os.getenv("REPLICATE_API_TOKEN")
 
 
 # Functions
-def llm_request(user_prompt: str) -> str:
+def llm_request(messages: list[dict[str, str]]) -> str:
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json",
@@ -18,29 +18,7 @@ def llm_request(user_prompt: str) -> str:
 
     json_data = {
         "model": "~google/gemini-flash-latest",
-        "messages": [
-            {
-                "role": "system",
-                "content": user_prompt,
-            },
-            {
-                "role": "user",
-                "content": "im sad",
-            },
-            {
-                "role": "assistant",
-                "content": "adfssdf",
-            },
-            {
-                "role": "user",
-                "content": user_prompt,
-            },
-            {
-                "role": "user",
-                "content": user_prompt,
-            },
-
-        ],
+        "messages": messages,
     }
 
     response = requests.post(
