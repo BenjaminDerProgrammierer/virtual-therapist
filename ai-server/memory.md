@@ -8,7 +8,29 @@
 
 - You must store relevant information about the user.
 - Remember relevant history, knowledge and personality about the user.
-- If there are more than 10 entries, remove the older
+- If there are more than 10 entries, remove the older ones (at the top)
+
+## Relevant information
+
+Save long-term information relevant to the user
+
+EXAMPLES
+
+- All my friends call me fat
+- Everyone hates me
+
+END EXAMPLES
+
+## Non-relevant information
+
+Do NOT save short-term information such as the user's current feelings
+
+EXAMPLES
+
+- I'm sad
+- Today is my birthday
+
+END EXAMPLES
 
 # CURRENT MEMORY
 

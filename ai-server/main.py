@@ -42,7 +42,7 @@ async def main():
         past_messages = await db.get_past_conversation_messages(
             conversation_id=current_conversation_id
         )
-        memory = await db.get_user_memory(user_id=user_id)
+        # TODO memory = await db.get_user_memory(user_id=user_id)
 
     print(f"PROMPT: {sys.argv[1]}")
     messages = (
@@ -50,7 +50,7 @@ async def main():
             {
                 "role": "system",
                 "content": system_prompt.format(
-                    memory=memory or "(no memory)"
+                    memory="(no memory)" # TODO memory=memory or "(no memory)"
                 ),
             }
         ]
@@ -80,29 +80,28 @@ async def main():
     except:
         pass
 
+    urllib.request.urlretrieve(url, OUTPUT_PATH)
+    print(f"TTS saved: {OUTPUT_PATH}")
+
+"""
+    # Get transcript
+    transcript = "User: why ." # TODO get the actual transcript
+
     # Update memory
     memory_messages = [
         {
             "role": "system",
-            "content": system_prompt.format(
+            "content": memory_prompt.format(
                 memory=memory or "No memory yet. Either add your first entries now or output this exact line not to add anything.",
-                transcript=transcript    
+                transcript=transcript
             ),
-        },
-        {
-            "role": "user",
-            "content": sys.argv[1],
-        },
-        {
-            "role": "assistant",
-            "content": llm_response,
-        },
+        }
     ]
 
     # LLM
     try:
         llm_response = llm_request(memory_messages)
-        print(f"LLM RESPONSE FOR MEMORY UPDATE: {llm_response}")
+        print(f"MEMORY UPDATE: {llm_response}")
     except Exception as e:
         print(f"LLM Request failed:\n{e}")
         sys.exit(1)
@@ -117,10 +116,7 @@ async def main():
             content=llm_response,
         )
         await db.update_user_memory(user_id=user_id, new_memory=llm_response)
-
-    urllib.request.urlretrieve(url, OUTPUT_PATH)
-    print(f"TTS saved: {OUTPUT_PATH}")
-
+"""
 
 if __name__ == "__main__":
     asyncio.run(main())
