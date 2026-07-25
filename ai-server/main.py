@@ -85,7 +85,7 @@ async def main():
     memory_messages = [
         {
             "role": "system",
-            "content": system_prompt.format(memory=memory or "No memory available."),
+            "content": memory_prompt.format(memory=memory or "No memory available."),
         },
         {
             "role": "user",
