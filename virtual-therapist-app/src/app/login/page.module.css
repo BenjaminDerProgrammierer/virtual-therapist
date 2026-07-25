@@ -51,10 +51,12 @@
     display: flex;
     padding: 6px;
     width: 250px;
+    height: 50px;
     color: white;
-    font-size: 14px;
+    font-size: 20px;
     background: black;
-    border-radius: 8px;
+    border-radius: 100vmax;
+    border: none;
     align-items: center;
     justify-content: center;
 }
