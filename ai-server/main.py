@@ -6,9 +6,7 @@ import urllib.request
 from core import llm_request, tts_request
 from db import Database
 
-INPUT_PATH = "audio/input.mp3"
 OUTPUT_PATH = "audio/output.mp3"
-
 
 async def main():
     # Load system prompt
@@ -20,8 +18,10 @@ async def main():
             "Usage: python main.py <user_prompt> [<phone_number>] [is_new_conversation]"
         )
         sys.exit(1)
+        
     phone_number = None
     is_new_conversation = False
+
     if len(sys.argv) >= 3:
         phone_number = sys.argv[2]
     if len(sys.argv) >= 4:

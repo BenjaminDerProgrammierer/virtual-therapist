@@ -20,9 +20,26 @@ def llm_request(user_prompt: str) -> str:
         "model": "~google/gemini-flash-latest",
         "messages": [
             {
+                "role": "system",
+                "content": user_prompt,
+            },
+            {
+                "role": "user",
+                "content": "im sad",
+            },
+            {
+                "role": "assistant",
+                "content": "adfssdf",
+            },
+            {
                 "role": "user",
                 "content": user_prompt,
             },
+            {
+                "role": "user",
+                "content": user_prompt,
+            },
+
         ],
     }
 
