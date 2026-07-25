@@ -10,39 +10,9 @@ class Database:
 
     async def connect(self):
         await self.db.connect()
-        await self.ensure_tables()
 
     async def disconnect(self):
         await self.db.disconnect()
-
-    async def ensure_tables(self):
-        if self._schema_initialized:
-            return
-
-        await self.db.execute_raw("""
-            CREATE TABLE IF NOT EXISTS "Users" (
-                id SERIAL PRIMARY KEY,
-                "phoneNumber" TEXT NOT NULL UNIQUE
-            )
-            """)
-        await self.db.execute_raw("""
-            CREATE TABLE IF NOT EXISTS "Conversations" (
-                id SERIAL PRIMARY KEY,
-                "userId" INTEGER NOT NULL,
-                "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """)
-        await self.db.execute_raw("""
-            CREATE TABLE IF NOT EXISTS "Messages" (
-                id SERIAL PRIMARY KEY,
-                "conversationId" INTEGER NOT NULL,
-                role TEXT NOT NULL,
-                content TEXT NOT NULL,
-                "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """)
-
-        self._schema_initialized = True
 
     async def __aenter__(self):
         await self.connect()
