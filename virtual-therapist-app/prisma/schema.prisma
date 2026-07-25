@@ -8,8 +8,23 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id          Int      @id @default(autoincrement())
+  name        String?
   phoneNumber String   @unique
+  createdAt   DateTime @default(now())
+  memory      String?
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
   createdAt DateTime @default(now())
+}
+
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversationId Int
+  role           String
+  content        String
+  createdAt      DateTime @default(now())
 }

@@ -8,8 +8,10 @@ datasource db {
 }
 
 model User {
-    id          Int    @id @default(autoincrement())
-    phoneNumber String @unique
+    id          Int      @id @default(autoincrement())
+    name        String?
+    phoneNumber String   @unique
+    createdAt   DateTime @default(now())
     memory      String?
 }
 
