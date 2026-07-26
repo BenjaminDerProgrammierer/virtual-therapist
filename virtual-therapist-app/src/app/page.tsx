@@ -1,5 +1,6 @@
 import { Sparkles } from "lucide-react";
 import Image from "next/image";
+import CopyButton from "@/components/CopyButton";
 import Spacer from "@/components/Spacer";
 import TopBar from "@/components/TopBar/TopBar";
 import snickers from "../../public/snickers.jpg";
@@ -26,7 +27,12 @@ export default function Home() {
           </p>
           <div className={styles.phone}>
             <p className={styles.phonep1}>Call Dr. Snickers</p>
-            <p className={styles.phonep2}>+49 221 59619 6054</p>
+            <div className={styles.phonep2container}>
+              <p className={styles.phonep2}>
+                <a href="tel:0044221596196054">+44 221 59619 6054</a>
+              </p>
+              <CopyButton text="+44 221 59619 6054" />
+            </div>
           </div>
           <a className={styles.button} href="/dashboard">
             Login

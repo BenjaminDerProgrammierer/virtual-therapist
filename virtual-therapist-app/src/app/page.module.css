@@ -90,3 +90,19 @@
     padding: 20px;
   }
 }
+
+.phonep2container {
+  display: flex;
+  gap: 15px;
+  justify-content: start;
+  align-items: center;
+
+  button {
+    background: none;
+    border: none;
+    color: black;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
+}
