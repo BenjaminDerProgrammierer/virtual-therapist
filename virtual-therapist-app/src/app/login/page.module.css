@@ -1,62 +1,62 @@
 .main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100dvw;
-    height: calc(100dvh - 300px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100dvw;
+  height: calc(100dvh - 300px);
 }
 
 .card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 40px;
-    border: 2px black solid;
-    border-radius: 8px;
-    align-items: center;
-    justify-content: center;
-    background-color: #f5ecda;
-    margin: auto auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px;
+  border: 2px black solid;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5ecda;
+  margin: auto auto;
 }
 
 .loginForm {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .loginField {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
 }
 
 .searchInput {
-    border: 2px black solid;
-    padding: 12px 10px;
-    color: black;
-    font-size: 16px;
-    border-radius: 8px;
-    background: white;
+  border: 2px black solid;
+  padding: 12px 10px;
+  color: black;
+  font-size: 16px;
+  border-radius: 8px;
+  background: white;
 }
 
 .searchInput::placeholder {
-    color: #888888;
-    font-style: italic;
-    font-weight: 300;
+  color: #888888;
+  font-style: italic;
+  font-weight: 300;
 }
 
 .submitButton {
-    display: flex;
-    padding: 6px;
-    width: 250px;
-    height: 50px;
-    color: white;
-    font-size: 20px;
-    background: black;
-    border-radius: 100vmax;
-    border: none;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  padding: 6px;
+  width: 250px;
+  height: 50px;
+  color: white;
+  font-size: 20px;
+  background: black;
+  border-radius: 100vmax;
+  border: none;
+  align-items: center;
+  justify-content: center;
 }

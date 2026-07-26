@@ -7,7 +7,7 @@
 }
 
 .underline {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 .phone {
@@ -26,14 +26,13 @@
 
 .button {
   display: block;
-  padding: 17;
-  width: fit-content;
+  width: 200px;
+  padding: 17px;
   border-radius: 100vmax;
   background-color: black;
   color: white;
-  width: 200px;
   text-align: center;
-  font-size: 22;
+  font-size: 22px;
 }
 
 .main {

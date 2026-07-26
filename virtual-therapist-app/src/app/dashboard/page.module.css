@@ -1,39 +1,38 @@
 .main {
-    padding-top: 60px;
+  padding-top: 60px;
 }
 
 .container {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    display: flex;
-    flex-direction: row;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: row;
 }
 
 .conversationHistory {
-    display: block;
-    border: 2px solid black;
-    border-radius: 15px;
-    min-width: 700px !important;
-    min-height: 800px;
-    padding: 30px;
-    margin-right: 20px;
+  display: block;
+  border: 2px solid black;
+  border-radius: 15px;
+  min-width: 700px;
+  min-height: 800px;
+  padding: 30px;
+  margin-right: 20px;
 }
 
 .conversationHistory > h2 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .memory > h2 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .memory {
-    display: block;
-    border: 2px solid black;
-    border-radius: 15px;
-    min-width: 600px !important;
-    min-height: 800px;
-    padding: 30px;
-    margin-left: 20px;
+  display: block;
+  border: 2px solid black;
+  border-radius: 15px;
+  min-width: 600px;
+  min-height: 800px;
+  padding: 30px;
+  margin-left: 20px;
 }
-

@@ -4,20 +4,93 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
-  id                Int               @id @default(autoincrement())
-  name              String
-  phone_number      String            @unique
-  access_code       String            @default("0")
-  therapy_sessions  TherapySession[]
-  createdAt         DateTime          @default(now())
+  id                  Int      @id @default(autoincrement())
+  name                String?
+  phoneNumber         String   @unique
+  phoneNumberVerified Boolean  @default(true)
+  accessCode          String   @default("0")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  memory              String?
+  email               String?  @unique
+  emailVerified       Boolean  @default(false)
+  image               String?
+
+  conversations   Conversation[]
+  therapySessions TherapySession[]
+  sessions        Session[]
+  accounts        Account[]
+}
+
+model Conversation {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime @default(now())
+
+  user     User      @relation(fields: [userId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversationId Int
+  role           String
+  content        String
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
 }
 
 model TherapySession {
-  id          Int         @id @default(autoincrement())
-  author      User        @relation(fields: [authorId], references: [id])
-  authorId    Int
+  id       Int  @id @default(autoincrement())
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String   @id
+  accountId             String
+  providerId            String
+  userId                Int
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
 }
