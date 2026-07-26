@@ -359,9 +359,7 @@ def transform_with_hamster(agi: AGI, speech_path: str) -> str:
         agi.execute("Originate", originate_arguments)
         wait_for_wav(
             result_path,
-            minimum_seconds=max(
-                0.5, playback_seconds + response_wait_seconds - 0.5
-            ),
+            minimum_seconds=max(0.5, playback_seconds + response_wait_seconds - 0.5),
             timeout_seconds=playback_seconds + response_wait_seconds + 10,
         )
         agi.verbose(f"HAMSTER RECORDING: accepting {result_path}")
@@ -457,12 +455,6 @@ async def main() -> int:
             finally:
                 os.unlink(audio_path)
 
-            memory_messages = build_memory_messages(
-                memory_prompt=memory_prompt, memory=memory, transcript=final_text
-            )
-            memory_llm_response = llm_request(memory_messages)
-            agi.verbose(f"MEMORY UPDATE: {memory_llm_response}")
-
             async with Database() as db:
                 await db.save_message(
                     conversation_id=current_conversation_id,
@@ -474,6 +466,14 @@ async def main() -> int:
                     role="assistant",
                     content=response_text,
                 )
+
+            memory_messages = build_memory_messages(
+                memory_prompt=memory_prompt, memory=memory, transcript=final_text
+            )
+            memory_llm_response = llm_request(memory_messages)
+            agi.verbose(f"MEMORY UPDATE: {memory_llm_response}")
+
+            async with Database() as db:
                 await db.update_user_memory(
                     user_id=user_id, new_memory=memory_llm_response
                 )
