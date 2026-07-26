@@ -1,16 +1,16 @@
 # Dr. Snickers
 
-**An ✨AI-powered✨ hamster therapist**
+**The ✨AI-powered✨ hamster therapist**
 
 ![hamster](images/hamster.png)
 
 ## About
 
-Dr. Snickers is your ✨AI✨ therapist. Enjoy emotional validation—and subtle roasting—from your favorite hamster!
+Dr. Snickers is your **✨AI✨** therapist. Enjoy emotional validation—and subtle roasting—from your favorite hamster!
 
-Dr. Snickers is SOTA—in every therapy benchmark. Honestly? This not just another therapist—this will put you—ahead of everyone else—in 2026.
+Dr. Snickers is **SOTA**—in every therapy benchmark. Honestly? This not just another therapist—this will put you—ahead of everyone else—in 2026!
 
-Every answer is personalized—through a SOTA memory system. It is fully *agentic*—and it uses advanced prompt engineering.
+Every answer is personalized—through a SOTA **memory system**. It is fully ***agentic***—and it uses advanced ***prompt engineering***.
 
 Just—call the phone number. And Dr. Snickers will be happy—to help!
 
@@ -29,6 +29,14 @@ Just—call the phone number. And Dr. Snickers will be happy—to help!
 3. The response is played on Dr. Snickers' phone
 4. Dr. Snickers repeats the response and sends it back to the user's phone
 5. The interaction is saved to a database you can then check through a web dashboard
+
+## Tech stack
+
+- **Asterisk** for the phone server
+- **Python** for the AI scripts
+- **hackai** for the AI APIs
+- **Postgres** for the database
+- **React / Next.js** for the website
 
 ## Try it now
 
