@@ -16,6 +16,7 @@ export default function TopBar({ selectedPage }: { selectedPage: string }) {
         text="Login"
         link={"/login"}
         selected={selectedPage === "/login"}
+        style={{textDecoration: "line-through"}}
       />
     </div>
   );

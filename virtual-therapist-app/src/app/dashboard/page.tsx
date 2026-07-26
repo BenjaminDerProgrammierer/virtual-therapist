@@ -1,7 +1,11 @@
 import TopBar from "@/components/TopBar/TopBar";
 import styles from "./page.module.css";
+import { prisma } from "@/lib/prisma";
+import { User, Bot } from "lucide-react";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const messages = await prisma.message.findMany();
+  const memory = (await prisma.user.findMany()).map((u) => u.memory).join("\n");
   return (
     <>
       <TopBar selectedPage="/dashboard" />
@@ -11,15 +15,18 @@ export default function Dashboard() {
           <section className={styles.conversationHistory}>
             <h2>Conversation history</h2>
             <p>
-              User: Testing 1 2 3<br />
-              Dr. Snickers: Testing 4 5 6
+              {messages.map((m) => {
+                return (
+                  <div>
+                    {m.role == "user" ? <User /> : <Bot />} {m.content}
+                  </div>
+                );
+              })}
             </p>
           </section>
           <section className={styles.memory}>
             <h2>Memory</h2>
-            <p>
-              - Testing 1 2 3<br />- Testing 4 5 6
-            </p>
+            <p style={{ whiteSpace: "pre-wrap" }}>{memory}</p>
           </section>
         </div>
       </main>
