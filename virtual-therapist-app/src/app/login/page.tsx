@@ -7,6 +7,7 @@ import Spacer from "@/components/Spacer";
 import TopBar from "@/components/TopBar/TopBar";
 import { onSignIn } from "./actions";
 import styles from "./page.module.css";
+import { redirect } from 'next/navigation'
 
 export default function Login() {
   return (
@@ -23,6 +24,7 @@ export default function Login() {
               try {
                 await onSignIn(formData);
                 toast.success("Logged in!");
+                redirect("/dashboard")
               } catch (err) {
                 toast.error(`Error while logging in: ${err}`);
               }
