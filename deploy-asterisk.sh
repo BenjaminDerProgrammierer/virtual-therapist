@@ -9,7 +9,7 @@ if ((EUID != 0)); then
 fi
 
 apt-get update
-apt-get install -y curl libgomp1 perl python3-venv sox
+apt-get install -y curl libgomp1 openssl perl python3-venv sox
 
 curl -fsSL https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz |
     tar -xz -C /opt
@@ -47,6 +47,36 @@ fi
 
 database_url="$(awk -F= '$1 == "DATABASE_URL" {sub(/^[^=]*=/, ""); print; exit}' \
     /etc/virtual-therapist/ai-server.env)"
+
+web_env="${repo_root}/virtual-therapist-app/.env"
+if [[ ! -e "${web_env}" ]]; then
+    web_owner="$(stat -c '%u' "${repo_root}/virtual-therapist-app")"
+    web_group="$(stat -c '%g' "${repo_root}/virtual-therapist-app")"
+    install -o "${web_owner}" -g "${web_group}" -m 0600 /dev/null "${web_env}"
+else
+    chmod 0600 "${web_env}"
+fi
+
+if ! grep -q '^DATABASE_URL=' "${web_env}"; then
+    printf 'DATABASE_URL=%s\n' "${database_url}" >> "${web_env}"
+fi
+if ! grep -q '^BETTER_AUTH_SECRET=' "${web_env}"; then
+    better_auth_secret="$(openssl rand -base64 32)"
+    printf 'BETTER_AUTH_SECRET=%s\n' "${better_auth_secret}" >> "${web_env}"
+fi
+if ! grep -q '^BETTER_AUTH_URL=' "${web_env}"; then
+    while true; do
+        read -rp "Public-facing website URL (for example, https://therapy.example.com): " \
+            public_url
+        public_url="${public_url%/}"
+        if [[ "${public_url}" =~ ^https?://[^[:space:]]+$ ]]; then
+            break
+        fi
+        echo "Enter a complete URL beginning with http:// or https://." >&2
+    done
+    printf 'BETTER_AUTH_URL=%s\n' "${public_url}" >> "${web_env}"
+fi
+
 PATH="/opt/asterisk-whisper/bin:${PATH}" \
     PRISMA_BINARY_CACHE_DIR=/opt/asterisk-whisper/prisma-binaries \
     DATABASE_URL="${database_url}" \
