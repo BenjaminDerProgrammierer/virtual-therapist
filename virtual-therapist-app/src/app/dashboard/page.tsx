@@ -14,15 +14,15 @@ export default async function Dashboard() {
         <div className={styles.container}>
           <section className={styles.conversationHistory}>
             <h2>Conversation history</h2>
-            <p>
+            <div>
               {messages.map((m) => {
                 return (
-                  <div>
+                  <div key={m.id}>
                     {m.role == "user" ? <User /> : <Bot />} {m.content}
                   </div>
                 );
               })}
-            </p>
+            </div>
           </section>
           <section className={styles.memory}>
             <h2>Memory</h2>

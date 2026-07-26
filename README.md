@@ -5,7 +5,7 @@
 ![hamster](images/hamster.png)
 
 TODO: demo
-TODO: screenshot
+![memory](images/memory.png)
 
 ## About
 
