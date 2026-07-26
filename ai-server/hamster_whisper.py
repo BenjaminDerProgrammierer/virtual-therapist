@@ -34,10 +34,8 @@ AI_AUDIO_LIMIT = 20 * 1024 * 1024
 HAMSTER_ENDPOINT = "PJSIP/40202"
 HAMSTER_RECORDING_DIR = Path("/var/spool/asterisk/monitor/hamster")
 WHITE_NOISE_RMS = 225
-WHITE_NOISE_RETRY_RMS = 450
 WHITE_NOISE_LEAD_SECONDS = 0.75
 WHITE_NOISE_TAIL_SECONDS = 1.0
-MIN_HAMSTER_RMS = 40
 MAX_SECONDS = 20.0
 MIN_AUDIO_SECONDS = 1.5
 PARTIAL_INTERVAL_SECONDS = 3.0
@@ -327,19 +325,6 @@ def recording_base(agi: AGI) -> str:
     return str(HAMSTER_RECORDING_DIR / f"{timestamp}-{safe_id}")
 
 
-def wav_rms(path: str) -> float:
-    with wave.open(path, "rb") as recording:
-        if recording.getnchannels() != 1 or recording.getsampwidth() != 2:
-            raise RuntimeError("hamster recording has an unexpected audio format")
-        samples = np.frombuffer(
-            recording.readframes(recording.getnframes()), dtype="<i2"
-        )
-    if samples.size == 0:
-        return 0.0
-    values = samples.astype(np.float64)
-    return float(np.sqrt(np.mean(values * values)))
-
-
 def wait_for_wav(path: str, minimum_seconds: float, timeout_seconds: float) -> None:
     deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
@@ -357,59 +342,36 @@ def wait_for_wav(path: str, minimum_seconds: float, timeout_seconds: float) -> N
 def transform_with_hamster(agi: AGI, speech_path: str) -> str:
     result_base = recording_base(agi)
     result_path = result_base + ".wav"
-
-    for attempt, noise_rms in enumerate(
-        (WHITE_NOISE_RMS, WHITE_NOISE_RETRY_RMS), start=1
-    ):
-        mixed_path = mix_with_white_noise(speech_path, noise_rms=noise_rms)
-        mixed_base = os.path.splitext(mixed_path)[0]
-        monitor_base = mixed_base + "-monitor"
-        playback_seconds = os.path.getsize(mixed_path) / (8000 * 2)
-        response_wait_seconds = math.ceil(playback_seconds + 4)
-        try:
+    mixed_path = mix_with_white_noise(speech_path, noise_rms=WHITE_NOISE_RMS)
+    mixed_base = os.path.splitext(mixed_path)[0]
+    monitor_base = mixed_base + "-monitor"
+    playback_seconds = os.path.getsize(mixed_path) / (8000 * 2)
+    response_wait_seconds = math.ceil(playback_seconds + 4)
+    try:
+        originate_arguments = (
+            "Local/s@hamster-bridge/n,exten,hamster-playback,s,1,20,"
+            f"v(HAMSTER_SEND={mixed_base}"
+            f"^HAMSTER_MONITOR={monitor_base}"
+            f"^HAMSTER_RESULT={result_base}"
+            f"^HAMSTER_WAIT={response_wait_seconds})"
+        )
+        agi.verbose("HAMSTER TRANSFORM: calling endpoint 40202")
+        agi.execute("Originate", originate_arguments)
+        wait_for_wav(
+            result_path,
+            minimum_seconds=max(
+                0.5, playback_seconds + response_wait_seconds - 0.5
+            ),
+            timeout_seconds=playback_seconds + response_wait_seconds + 10,
+        )
+        agi.verbose(f"HAMSTER RECORDING: accepting {result_path}")
+        return result_base
+    finally:
+        for temporary_path in (mixed_path, monitor_base + ".wav"):
             try:
-                os.unlink(result_path)
+                os.unlink(temporary_path)
             except FileNotFoundError:
                 pass
-            originate_arguments = (
-                "Local/s@hamster-bridge/n,exten,hamster-playback,s,1,20,"
-                f"v(HAMSTER_SEND={mixed_base}"
-                f"^HAMSTER_MONITOR={monitor_base}"
-                f"^HAMSTER_RESULT={result_base}"
-                f"^HAMSTER_WAIT={response_wait_seconds})"
-            )
-            agi.verbose(
-                f"HAMSTER TRANSFORM: calling endpoint 40202 "
-                f"(attempt {attempt}, noise RMS {noise_rms})"
-            )
-            agi.execute("Originate", originate_arguments)
-            wait_for_wav(
-                result_path,
-                minimum_seconds=max(
-                    0.5, playback_seconds + response_wait_seconds - 0.5
-                ),
-                timeout_seconds=playback_seconds + response_wait_seconds + 10,
-            )
-            if os.path.isfile(result_path) and os.path.getsize(result_path) > 44:
-                signal_rms = wav_rms(result_path)
-                if signal_rms >= MIN_HAMSTER_RMS:
-                    agi.verbose(
-                        f"HAMSTER RECORDING: {result_path} (RMS {signal_rms:.1f})"
-                    )
-                    return result_base
-            agi.verbose(f"HAMSTER TRANSFORM: silent response on attempt {attempt}")
-        finally:
-            for temporary_path in (mixed_path, monitor_base + ".wav"):
-                try:
-                    os.unlink(temporary_path)
-                except FileNotFoundError:
-                    pass
-
-    try:
-        os.unlink(result_path)
-    except FileNotFoundError:
-        pass
-    raise RuntimeError("hamster returned silence after two attempts")
 
 
 async def main() -> int:
