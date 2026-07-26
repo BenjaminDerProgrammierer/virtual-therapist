@@ -57,7 +57,7 @@ class Database:
     async def get_user_id_from_phone_number(
         self, phone_number: str, create_if_not_exists: bool = True
     ) -> int:
-        user = await self.db.user.find_first(where={"phoneNumber": phone_number})
+        user = await self.db.user.find_unique(where={"phoneNumber": phone_number})
         if user:
             return user.id
         if create_if_not_exists:
@@ -70,6 +70,9 @@ class Database:
             where={"userId": user_id}
         ):
             await self.delete_conversation(conversation.id)
+        await self.db.therapysession.delete_many(where={"authorId": user_id})
+        await self.db.session.delete_many(where={"userId": user_id})
+        await self.db.account.delete_many(where={"userId": user_id})
         await self.db.user.delete(where={"id": user_id})
 
     async def delete_conversation(self, conversation_id: int) -> None:
