@@ -4,6 +4,9 @@
 
 ![hamster](images/hamster.png)
 
+TODO: demo
+TODO: screenshot
+
 ## About
 
 Dr. Snickers is your **✨AI✨** therapist. Enjoy emotional validation—and subtle roasting—from your favorite hamster!
