@@ -1,5 +1,3 @@
-"use server";
-
 import { authClient } from "@/lib/auth-client";
 
 export async function onSignIn(formData: FormData) {
@@ -13,6 +11,7 @@ export async function onSignIn(formData: FormData) {
   });
 
   if (error) throw error;
+
 
   return true;
 }

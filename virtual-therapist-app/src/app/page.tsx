@@ -26,7 +26,7 @@ export default function Home() {
           </p>
           <div className={styles.phone}>
             <p className={styles.phonep1}>Call Dr. Snickers</p>
-            <p className={styles.phonep2}>+44 221 59619 6054</p>
+            <p className={styles.phonep2}>+49 221 59619 6054</p>
           </div>
           <a className={styles.button} href="/login">
             Login
