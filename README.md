@@ -20,6 +20,12 @@ Just—call the phone number. And Dr. Snickers will be happy—to help!
 - Enjoy a personalized roasting session through our memory system
 - See your conversation history and memory through out website dashboard
 
+## Try it now
+
+**Call +49 221 59619 6054**
+
+**See the dashboard at TODO**
+
 ## How it works
 
 ![diagram](images/diagram.png)
@@ -37,12 +43,6 @@ Just—call the phone number. And Dr. Snickers will be happy—to help!
 - **hackai** for the AI APIs
 - **Postgres** for the database
 - **React / Next.js** for the website
-
-## Try it now
-
-**Call +44 221 59619 6054**
-
-**See the dashboard at TODO**
 
 ## Host it yourself
 
